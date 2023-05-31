@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.entitys;
 
 
 
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,6 +20,10 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 public class User implements UserDetails {
 
     @Id
@@ -32,10 +37,10 @@ public class User implements UserDetails {
     @Column(name = "lastname")
     private String lastname;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "age")
+    private int age;
 
-    @Column(name = "username")
+    @Column(name = "email")
     private String username;
 
     @Column(name = "password")
@@ -49,6 +54,7 @@ public class User implements UserDetails {
 
     )
     @Fetch(FetchMode.JOIN)
+    @ToString.Exclude
     private Set<Role> roleSet = new HashSet<>();
 
 
@@ -98,72 +104,9 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void addRole(Role role) {
+    public void setRole(Role role) {
         roleSet.add(role);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoleSet() {
-        return roleSet;
-    }
-
-    public void setRoleSet(Set<Role> roleSet) {
-        this.roleSet = roleSet;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(getId(), user.getId()) && Objects.equals(getFirstname(),
-                user.getFirstname()) && Objects.equals(getLastname(), user.getLastname()) && Objects.equals(getEmail(),
-                user.getEmail()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getPassword(),
-                user.getPassword()) && Objects.equals(getRoleSet(), user.getRoleSet());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getFirstname(), getLastname(), getEmail(), getUsername(),
-                getPassword(), getRoleSet());
-    }
 }
 

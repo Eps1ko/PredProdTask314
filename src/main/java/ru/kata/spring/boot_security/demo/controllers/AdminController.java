@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.entitys.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 
@@ -25,15 +26,13 @@ public class AdminController {
     }
 
     @GetMapping("/admin")
-    public String showAllUsers(Model model) {
+    public String showAllUsers(Principal principal, Model model, @ModelAttribute("newUser") User user) {
+        User admin = userService.findByEmail(principal.getName());
+        model.addAttribute("admin", admin);
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
-        return "users";
-    }
-    @GetMapping("/admin/addUserForm")
-    public String addUserForm(@ModelAttribute("newUser") User user, Model model) {
         model.addAttribute("roles", roleService.findAll());
-        return "newUser";
+        return "admin";
     }
 
     @PostMapping("/admin/addUser")
@@ -50,14 +49,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/update/{id}")
-    public String update(Model model, @PathVariable("id") Long id) {
-        User user = userService.findById(id);
-        model.addAttribute("userToUpdate", user);
-        model.addAttribute("roles", roleService.findAll());
-        return "updateUser";
-    }
-    @PatchMapping("/admin/updateUser")
+    @PatchMapping("/admin/updateUser/{id}")
     public String updateUser(User user, @RequestParam("roles") Set<Role> roles) {
         user.setRoleSet(roles);
         userService.saveUser(user);
